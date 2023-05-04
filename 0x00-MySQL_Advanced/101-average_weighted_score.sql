@@ -1,0 +1,15 @@
+-- This is a MySQL stored procedure named ComputeAverageWeightedScoreForUsers
+-- that calculates and updates the average weighted score for all users in the users table.
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS ComputeAverageWeightedScoreForUsers;
+CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
+BEGIN
+    UPDATE users set average_score = (SELECT
+    SUM(corrections.score * projects.weight) / SUM(projects.weight)
+    FROM corrections
+    INNER JOIN projects
+    ON projects.id = corrections.project_id
+    where corrections.user_id = users.id);
+END $$
+DELIMITER ;
